@@ -1,5 +1,8 @@
-import Case.TimeClientHandler1;
+package Decode;
+
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -7,22 +10,18 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 
-
 /**
- * Netty 基础
- * Time客户端
- * 解决粘包问题
- * Created by Administrator on 2016/06/18.
+ * DelimiterBasedFrameDecoder解码器应用
+ * Echo客户端
+ * Created by Administrator on 2016/06/19.
  */
-public class TimeClient {
+public class EchoClient {
 
     public void connect(int port, String host) throws Exception {
-
         EventLoopGroup group = new NioEventLoopGroup();
-
         try {
             Bootstrap b = new Bootstrap();
             b.group(group).channel(NioSocketChannel.class)
@@ -30,11 +29,14 @@ public class TimeClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            ByteBuf delimiter = Unpooled.copiedBuffer("$_"
+                            .getBytes());
+
                             socketChannel.pipeline()
-                                    .addLast(new LineBasedFrameDecoder(1024));
+                                    .addLast(new DelimiterBasedFrameDecoder(1024,delimiter));
                             socketChannel.pipeline()
                                     .addLast(new StringDecoder());
-                            socketChannel.pipeline().addLast(new TimeClientHandler());
+                            socketChannel.pipeline().addLast(new EchoClientHandler());
                         }
                     });
 
@@ -49,14 +51,10 @@ public class TimeClient {
         int port = 8080;
         if (args != null && args.length > 0) {
             try {
-
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-
             }
-
         }
-        new TimeClient().connect(port, "127.0.0.1");
-
+        new EchoClient().connect(port, "127.0.0.1");
     }
 }
