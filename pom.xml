@@ -11,6 +11,7 @@
     <modules>
         <module>NServer</module>
         <module>NClient</module>
+        <module>nighthawk</module>
     </modules>
     <dependencies>
         <dependency>
