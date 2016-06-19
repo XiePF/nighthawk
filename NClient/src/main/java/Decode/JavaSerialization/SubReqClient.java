@@ -1,8 +1,6 @@
-package Decode;
+package Decode.JavaSerialization;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -10,14 +8,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+
 /**
- * DelimiterBasedFrameDecoder解码器应用
- * Echo客户端
- * Created by Administrator on 2016/06/19.
+ * Java序列化
+ * Created by xpf on 2016/06/19.
  */
-public class EchoClient {
+public class SubReqClient {
+
     public void connect(int port, String host) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -27,14 +27,12 @@ public class EchoClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            ByteBuf delimiter = Unpooled.copiedBuffer("$_"
-                            .getBytes());
-
                             socketChannel.pipeline()
-                                    .addLast(new DelimiterBasedFrameDecoder(1024,delimiter));
+                                    .addLast(new ObjectDecoder(1024, ClassResolvers
+                                    .cacheDisabled(this.getClass().getClassLoader())));
                             socketChannel.pipeline()
-                                    .addLast(new StringDecoder());
-                            socketChannel.pipeline().addLast(new EchoClientHandler());
+                                    .addLast(new ObjectEncoder());
+                            socketChannel.pipeline().addLast(new SubReqClientHandler());
                         }
                     });
 
@@ -53,6 +51,6 @@ public class EchoClient {
             } catch (NumberFormatException e) {
             }
         }
-        new EchoClient().connect(port, "127.0.0.1");
+        new SubReqClient().connect(port, "127.0.0.1");
     }
 }
