@@ -1,7 +1,5 @@
 package Decode.Protobuf;
 
-import com.sky.nighthawk.model.SubscribeReq;
-import com.sky.nighthawk.model.SubscribeResp;
 import com.sky.nighthawk.model.protobuf.SubscribeReqProto;
 import com.sky.nighthawk.model.protobuf.SubscribeRespProto;
 import io.netty.channel.ChannelHandler;
