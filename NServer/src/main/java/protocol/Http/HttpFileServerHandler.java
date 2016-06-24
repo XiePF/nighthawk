@@ -93,7 +93,6 @@ public class HttpFileServerHandler  extends
         sendFileFuture = ctx.write(new ChunkedFile(randomAccessFile, 0,
                 fileLength, 8192), ctx.newProgressivePromise());
         sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
-            @Override
             public void operationProgressed(ChannelProgressiveFuture future,
                                             long progress, long total) {
                 if (total < 0) { // total unknown
@@ -104,7 +103,6 @@ public class HttpFileServerHandler  extends
                 }
             }
 
-            @Override
             public void operationComplete(ChannelProgressiveFuture future)
                     throws Exception {
                 System.out.println("Transfer complete.");

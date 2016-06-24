@@ -17,7 +17,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
  */
 public class HttpFileServer {
 
-    private static final String DEFAULT_URL = "com";
+    private static final String DEFAULT_URL = "/NServer/src";
 
     public void bind(final int port, final String url) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
