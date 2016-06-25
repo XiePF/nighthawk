@@ -10,7 +10,7 @@ public class Order {
 
     private  Address billTo;
 
-    private  Shipping shippiing;
+    private  Shipping shipping;
 
     private  Address shipTo;
 
@@ -40,12 +40,12 @@ public class Order {
         this.billTo = billTo;
     }
 
-    public Shipping getShippiing() {
-        return shippiing;
+    public Shipping getShipping() {
+        return shipping;
     }
 
-    public void setShippiing(Shipping shippiing) {
-        this.shippiing = shippiing;
+    public void setShipping(Shipping shipping) {
+        this.shipping = shipping;
     }
 
     public Address getShipTo() {
