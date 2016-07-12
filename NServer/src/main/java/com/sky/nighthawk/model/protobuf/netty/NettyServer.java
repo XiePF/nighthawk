@@ -3,6 +3,7 @@ package com.sky.nighthawk.model.protobuf.netty;
 import com.sky.nighthawk.model.protobuf.netty.codec.NettyMessageDecoder;
 import com.sky.nighthawk.model.protobuf.netty.codec.NettyMessageEncoder;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -43,7 +44,8 @@ public class NettyServer {
                 });
 
         // 绑定端口，同步等待成功
-        b.bind(NettyConstant.REMOTEIP, NettyConstant.PORT).sync();
+        ChannelFuture f =  b.bind(NettyConstant.REMOTEIP, NettyConstant.PORT).sync();
+        f.channel().closeFuture().sync();
         System.out.println("Netty server start ok : "
                 + (NettyConstant.REMOTEIP + " : " + NettyConstant.PORT));
     }

@@ -43,6 +43,7 @@ public class HeartBeatReqHandler extends ChannelHandlerAdapter {
             this.ctx = ctx;
         }
 
+        @Override
         public void run() {
             NettyMessage heatBeat = buildHeatBeat();
             System.out
