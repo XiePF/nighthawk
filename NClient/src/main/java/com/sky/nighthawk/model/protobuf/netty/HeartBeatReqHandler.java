@@ -1,5 +1,6 @@
 package com.sky.nighthawk.model.protobuf.netty;
 
+
 import com.sky.nighthawk.model.protobuf.netty.struct.Header;
 import com.sky.nighthawk.model.protobuf.netty.struct.NettyMessage;
 import io.netty.channel.ChannelHandlerAdapter;
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by xpf on 2016/07/11.
  */
-public class HeartBeatReqHandler extends ChannelHandlerAdapter {
+public class HeartBeatReqHandler  extends ChannelHandlerAdapter {
 
     private volatile ScheduledFuture<?> heartBeat;
 
