@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,23 +13,20 @@ import java.util.Map;
  * Created by xpf on 2016/07/08.
  */
 public class NettyMessageDecoder  extends LengthFieldBasedFrameDecoder {
-
     MarshallingDecoder marshallingDecoder;
 
-    public NettyMessageDecoder(int maxFrameLength, int lengthFieldOffset,
-                               int lengthFieldLength) throws IOException {
-        super(maxFrameLength, lengthFieldOffset, lengthFieldLength);
-        marshallingDecoder = new MarshallingDecoder();
+    public NettyMessageDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int lengthAdjustment, int initialBytesToStrip) {
+        super(maxFrameLength, lengthFieldOffset, lengthFieldLength, lengthAdjustment, initialBytesToStrip);
+        marshallingDecoder = MarshallingCodecFactory.buildMarshallingDecoder();
+
     }
 
     @Override
-    protected Object decode(ChannelHandlerContext ctx, ByteBuf in)
-            throws Exception {
+    public Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         ByteBuf frame = (ByteBuf) super.decode(ctx, in);
         if (frame == null) {
             return null;
         }
-
         NettyMessage message = new NettyMessage();
         Header header = new Header();
         header.setCrcCode(frame.readInt());
@@ -41,7 +37,7 @@ public class NettyMessageDecoder  extends LengthFieldBasedFrameDecoder {
 
         int size = frame.readInt();
         if (size > 0) {
-            Map<String, Object> attch = new HashMap<String, Object>(size);
+            Map<String, Object> attach = new HashMap<String, Object>(size);
             int keySize = 0;
             byte[] keyArray = null;
             String key = null;
@@ -50,17 +46,16 @@ public class NettyMessageDecoder  extends LengthFieldBasedFrameDecoder {
                 keyArray = new byte[keySize];
                 frame.readBytes(keyArray);
                 key = new String(keyArray, "UTF-8");
-                attch.put(key, marshallingDecoder.decode(frame));
+                attach.put(key, marshallingDecoder.decode(ctx, frame));
             }
             keyArray = null;
             key = null;
-            header.setAttachment(attch);
+            header.setAttachment(attach);
         }
         if (frame.readableBytes() > 4) {
-            message.setBody(marshallingDecoder.decode(frame));
+            message.setBody(marshallingDecoder.decode(ctx, frame));
         }
         message.setHeader(header);
         return message;
     }
 }
-

@@ -1,6 +1,8 @@
 package com.sky.nighthawk.model.protobuf.netty.codec;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.marshalling.MarshallerProvider;
 import org.jboss.marshalling.Marshaller;
 
 import java.io.IOException;
@@ -8,27 +10,15 @@ import java.io.IOException;
 /**
  * Created by xpf on 2016/07/08.
  */
-public class MarshallingEncoder {
+public class MarshallingEncoder extends io.netty.handler.codec.marshalling.MarshallingEncoder {
 
-    private static final byte[] LENGTH_PLACEHOLDER = new byte[4];
-    Marshaller marshaller;
-
-    public MarshallingEncoder() throws IOException {
-        marshaller = MarshallingCodecFactory.buildMarshalling();
+    public MarshallingEncoder(MarshallerProvider provider) {
+        super(provider);
     }
 
-    protected void encode(Object msg, ByteBuf out) throws Exception {
-        try {
-            int lengthPos = out.writerIndex();
-            out.writeBytes(LENGTH_PLACEHOLDER);
-            ChannelBufferByteOutput output = new ChannelBufferByteOutput(out);
-            marshaller.start(output);
-            marshaller.writeObject(msg);
-            marshaller.finish();
-            out.setInt(lengthPos, out.writerIndex() - lengthPos - 4);
-        } finally {
-            marshaller.close();
-        }
+    @Override
+    public void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+        super.encode(ctx, msg, out);
     }
+
 }
-
