@@ -22,7 +22,7 @@ public class AbstractHttpXmlEncoder<T> extends MessageToMessageEncoder<T> {
     final static Charset UTF_8 = Charset.forName(CHARSET_NAME);
 
 
-    protected ByteBuf encode(ChannelHandlerContext ctx, Object body)
+    protected ByteBuf encodeo(ChannelHandlerContext ctx, Object body)
             throws Exception {
         factory = BindingDirectory.getFactory(body.getClass());
         writer = new StringWriter();
