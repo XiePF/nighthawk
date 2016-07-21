@@ -1,5 +1,8 @@
 package protocol.HttpXML;
 
+import com.sky.nighthawk.model.protocol.HttpXML.Order;
+import com.sky.nighthawk.model.protocol.HttpXML.codec.HttpXmlRequestEncoder;
+import com.sky.nighthawk.model.protocol.HttpXML.codec.HttpXmlResponseDecoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequestEncoder;
 import io.netty.handler.codec.http.HttpResponseDecoder;
 
 import java.net.InetSocketAddress;
@@ -32,7 +36,17 @@ public class HttpXmlClient {
                                     new HttpResponseDecoder());
                             ch.pipeline().addLast("http-aggregator",
                                     new HttpObjectAggregator(65536));
-
+                            // XML解码器
+                            ch.pipeline().addLast(
+                                    "xml-decoder",
+                                    new HttpXmlResponseDecoder(Order.class,
+                                            true));
+                            ch.pipeline().addLast("http-encoder",
+                                    new HttpRequestEncoder());
+                            ch.pipeline().addLast("xml-encoder",
+                                    new HttpXmlRequestEncoder());
+                            ch.pipeline().addLast("xmlClientHandler",
+                                    new HttpXmlClientHandle());
                         }
                     });
 
