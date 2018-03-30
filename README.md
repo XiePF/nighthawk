@@ -1,2 +1,2 @@
 Learning Netty Application.
-test
+tests
